@@ -27,20 +27,14 @@ class SparkEmailParser(sc: SparkContext) extends java.io.Serializable {
     zipFileRDD
   }
 
-  def wordCount(content: String): Long = {
-    0
-  }
-
-
   def fileWordStats(fileRdd : RDD[(String, String)]): Map[String, AnyVal] = {
     var cntFile: Int = 0;
-    var cntWord: Long = 0;
     fileRdd.collect().foreach(x => {
       cntFile += 1
-      cntWord += wordCount(x._2)
       println(x._1)
     })
-    val mapOutput = Map(("fileCount", cntFile), ("wordCount", cntWord))
+    val cntWord = fileRdd.flatMap(x => x._2.split(" ")).count()
+    val mapOutput = Map(("fileCount", cntFile), ("wordCount", cntWord), ("avgWordPerFile", cntWord/cntFile))
     mapOutput
   }
 
@@ -58,6 +52,8 @@ class SparkEmailParser(sc: SparkContext) extends java.io.Serializable {
     val rddFile = getTxtFileRdd(folder)
     val mapStats = fileWordStats(rddFile)
     println("files = " + mapStats.get("fileCount").get)
+    println("words = " + mapStats.get("wordCount").get)
+    println("avg Words Per file = " + mapStats.get("avgWordPerFile").get)
     mapStats
   }
 
@@ -69,8 +65,8 @@ class SparkEmailParser(sc: SparkContext) extends java.io.Serializable {
   }
 
   def process(folder: String): Unit = {
-    processWordStats(folder)
-    processRecipientStats(folder)
+    val mapWordStats = processWordStats(folder)
+    val mapRecipientStats = processRecipientStats(folder)
   }
 
 }
