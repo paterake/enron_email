@@ -54,13 +54,23 @@ class SparkEmailParser(sc: SparkContext) extends java.io.Serializable {
     mapOutput
   }
 
-  def process(folder: String) {
-    val rddTxtFile = getTxtFileRdd(folder)
-    val rddXmlFile = getXmlFileRdd(folder)
-    val mapWordStats = fileWordStats(rddTxtFile)
-    val mapRecipientStats = fileRecipientStats(rddXmlFile)
-    println("files = " + mapWordStats.get("fileCount").get)
-    println("files = " + mapRecipientStats.get("fileCount").get)
+  def processWordStats(folder: String): Map[String, AnyVal] = {
+    val rddFile = getTxtFileRdd(folder)
+    val mapStats = fileWordStats(rddFile)
+    println("files = " + mapStats.get("fileCount").get)
+    mapStats
+  }
+
+  def processRecipientStats(folder: String): Map[String, AnyVal] = {
+    val rddFile = getXmlFileRdd(folder)
+    val mapStats = fileRecipientStats(rddFile)
+    println("files = " + mapStats.get("fileCount").get)
+    mapStats
+  }
+
+  def process(folder: String): Unit = {
+    processWordStats(folder)
+    processRecipientStats(folder)
   }
 
 }
