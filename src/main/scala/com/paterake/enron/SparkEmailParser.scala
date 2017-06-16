@@ -67,7 +67,6 @@ class SparkEmailParser(sc: SparkContext) extends java.io.Serializable {
     println("files = " + mapStats.get("fileCount").get)
     val rddXml = rddFile.map(x => x._2)
     val df = new XmlReader().withRowTag("Root").xmlRdd(sqlContext, rddXml)
-    df.printSchema()
     val df2 = df
       .select(functions.explode(df.col("Batch.Documents.Document.Tags")).as("t1"))
       .select(functions.col("t1.*"))
@@ -75,9 +74,12 @@ class SparkEmailParser(sc: SparkContext) extends java.io.Serializable {
       .select("t2._TagName", "t2._TagValue")
       .filter("t2._TagName in ('#To', '#CC')")
 
+    df2.foreach( x => {
+      if (x.get(0) == "#CC") {
+        println(x.get(1))
+      }
+    })
 
-    df2.printSchema()
-    df2.show(10)
     mapStats
   }
 
