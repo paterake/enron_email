@@ -1,9 +1,12 @@
 package com.paterake.enron
 
+import com.databricks.spark.xml.XmlReader
 import com.paterake.enron.util.ZipFileInputFormat
 import org.apache.hadoop.io.{BytesWritable, Text}
 import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.functions
 import org.apache.spark.{SparkConf, SparkContext}
+import org.apache.spark.sql.types._
 
 class SparkEmailParser(sc: SparkContext) extends java.io.Serializable {
 
@@ -31,7 +34,7 @@ class SparkEmailParser(sc: SparkContext) extends java.io.Serializable {
     var cntFile: Int = 0;
     fileRdd.collect().foreach(x => {
       cntFile += 1
-      println(x._1)
+      //println(x._1)
     })
     val cntWord = fileRdd.flatMap(x => x._2.split(" ")).count()
     val mapOutput = Map(("fileCount", cntFile), ("wordCount", cntWord), ("avgWordPerFile", cntWord/cntFile))
@@ -42,7 +45,7 @@ class SparkEmailParser(sc: SparkContext) extends java.io.Serializable {
     var cntFile: Int = 0;
     fileRdd.collect().foreach(x => {
       cntFile += 1
-      println(x._1)
+      //println(x._1)
     })
     val mapOutput = Map(("fileCount", cntFile))
     mapOutput
@@ -58,9 +61,23 @@ class SparkEmailParser(sc: SparkContext) extends java.io.Serializable {
   }
 
   def processRecipientStats(folder: String): Map[String, AnyVal] = {
+    val sqlContext = new org.apache.spark.sql.SQLContext(sc)
     val rddFile = getXmlFileRdd(folder)
     val mapStats = fileRecipientStats(rddFile)
     println("files = " + mapStats.get("fileCount").get)
+    val rddXml = rddFile.map(x => x._2)
+    val df = new XmlReader().withRowTag("Root").xmlRdd(sqlContext, rddXml)
+    df.printSchema()
+    val df2 = df
+      .select(functions.explode(df.col("Batch.Documents.Document.Tags")).as("t1"))
+      .select(functions.col("t1.*"))
+      .select(functions.explode(functions.col("tag")).as("t2"))
+      .select("t2._TagName", "t2._TagValue")
+      .filter("t2._TagName in ('#To', '#CC')")
+
+
+    df2.printSchema()
+    df2.show(10)
     mapStats
   }
 
