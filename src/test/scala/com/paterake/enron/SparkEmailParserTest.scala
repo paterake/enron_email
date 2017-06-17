@@ -1,37 +1,43 @@
 package com.paterake.enron
 
+import org.apache.spark.sql.SparkSession
 import org.apache.spark.{SparkConf, SparkContext}
-import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, FunSuite}
+import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
 class SparkEmailParserTest extends FunSuite with BeforeAndAfterAll{
 
   @transient
-  private var _ctxt: SparkContext = _
+  private var _spark: SparkSession = _
 
-  def ctxt: SparkContext = _ctxt
+  def spark: SparkSession = _spark
 
   var emailParser: SparkEmailParser = _
   val folder: String = "file:///home/rakesh/Documents/__code/__git/enronEmail/src/test/resources/data/edrm-enron-v2_quenet-j_xml*"
 
   override def beforeAll {
-    val conf = new SparkConf().setAppName("SparkEmailParserTest").setMaster("local")
-    _ctxt = new SparkContext(conf)
-    emailParser = new SparkEmailParser(ctxt)
+    _spark = SparkSession
+       .builder()
+       .appName("SparkEmailParserTest")
+       .master("local")
+       .getOrCreate()
+
+    emailParser = new SparkEmailParser(spark)
     super.beforeAll()
   }
 
   override def afterAll() {
-    if (ctxt != null) {
-      _ctxt.stop()
+    if (spark != null) {
+      _spark.stop()
     }
     System.clearProperty("spark.driver.port")
-    _ctxt = null
+    _spark = null
     super.afterAll()
   }
 
   test("Text File Count") {
     val mapStats = emailParser.processWordStats(folder)
     assert(mapStats.get("fileCount").get==665)
+    assert(mapStats.get("avgWordPerFile").get==244)
   }
 
   test("XML File Count") {
