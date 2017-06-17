@@ -113,7 +113,8 @@ object SparkEmailParser {
       .appName("SparkEmailParser")
       .master("local")
       .getOrCreate()
+      .set("yarn.nodemanager.vmem-check-enabled","false")
     val emailParser = new SparkEmailParser(spark)
-    emailParser.process("file:///home/rakesh/Documents/__code/__git/enronEmail/src/test/resources/data/edrm-enron-v2_quenet-j_xml*")
+    emailParser.process(args(0))
   }
 }
