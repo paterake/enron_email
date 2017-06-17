@@ -41,8 +41,7 @@ class SparkEmailParserTest extends FunSuite with BeforeAndAfterAll{
   }
 
   test("XML File Count") {
-    val rddXmlFile = emailParser.getXmlFileRdd(folder)
-    val mapStats = emailParser.fileRecipientStats(rddXmlFile)
+    val mapStats = emailParser.processRecipientStats(folder)
     assert(mapStats.get("fileCount").get==1)
   }
 

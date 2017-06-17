@@ -4,7 +4,9 @@ import com.databricks.spark.xml.XmlReader
 import com.paterake.enron.util.ZipFileInputFormat
 import org.apache.hadoop.io.{BytesWritable, Text}
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.{SparkSession, functions}
+import org.apache.spark.sql.{Dataset, Row, SparkSession, functions}
+
+import scala.util.matching.Regex
 
 class SparkEmailParser(spark: SparkSession) extends java.io.Serializable {
 
@@ -18,18 +20,8 @@ class SparkEmailParser(spark: SparkSession) extends java.io.Serializable {
     zipFileRDD
   }
 
-  def getTxtFileRdd(folder: String): RDD[(String, String)] = {
-    val fileRdd = getZipFileRdd(folder, ".txt")
-    fileRdd
-  }
-
-  def getXmlFileRdd(folder: String): RDD[(String, String)] = {
-    val fileRdd = getZipFileRdd(folder, ".xml")
-    fileRdd
-  }
-
   def rddCount(rdd : RDD[(String, String)]): Int = {
-    var cntRdd: Int = 0;
+    var cntRdd: Int = 0
     rdd.collect().foreach(x => {
       cntRdd += 1
       //println(x._1)
@@ -38,33 +30,15 @@ class SparkEmailParser(spark: SparkSession) extends java.io.Serializable {
   }
 
   def fileWordStats(fileRdd: RDD[(String, String)]): Map[String, AnyVal] = {
-    val cntFile: Int = rddCount(fileRdd);
+    val cntFile: Int = rddCount(fileRdd)
     val cntWord = fileRdd.flatMap(x => x._2.split(" ")).count()
     val mapOutput = Map(("fileCount", cntFile), ("wordCount", cntWord), ("avgWordPerFile", cntWord/cntFile))
     mapOutput
   }
 
-  def fileRecipientStats(fileRdd : RDD[(String, String)]): Map[String, AnyVal] = {
-    val cntFile: Int = rddCount(fileRdd);
-    val mapOutput = Map(("fileCount", cntFile))
-    mapOutput
-  }
-
-  def processWordStats(folder: String): Map[String, AnyVal] = {
-    val rddFile = getTxtFileRdd(folder)
-    val mapStats = fileWordStats(rddFile)
-    println("files = " + mapStats.get("fileCount").get)
-    println("words = " + mapStats.get("wordCount").get)
-    println("avg Words Per file = " + mapStats.get("avgWordPerFile").get)
-    mapStats
-  }
-
-  def processRecipientStats(folder: String): Map[String, AnyVal] = {
+  def getRecipientSet(fileRdd : RDD[(String, String)]): Dataset[Row] = {
+    val rddXml = fileRdd.map(x => x._2)
     val sqlContext = spark.sqlContext
-    val rddFile = getXmlFileRdd(folder)
-    val mapStats = fileRecipientStats(rddFile)
-    println("files = " + mapStats.get("fileCount").get)
-    val rddXml = rddFile.map(x => x._2)
     val df = new XmlReader().withRowTag("Root").xmlRdd(sqlContext, rddXml)
     val df2 = df
       .select(functions.explode(df.col("Batch.Documents.Document.Tags")).as("t1"))
@@ -72,19 +46,62 @@ class SparkEmailParser(spark: SparkSession) extends java.io.Serializable {
       .select(functions.explode(functions.col("tag")).as("t2"))
       .select("t2._TagName", "t2._TagValue")
       .filter("t2._TagName in ('#To', '#CC')")
+      .withColumn("weight", functions.when(functions.col("_TagName") === functions.lit("#To"), 2).otherwise(1))
+    df2.printSchema()
+    df2.show(10)
+    df2
+  }
 
-    df2.foreach( x => {
-      if (x.get(0) == "#CC") {
-        println(x.get(1))
-      }
-    })
+  def getRecipient(df: Dataset[Row], recipientType: String, regex: Regex): Array[String] = {
+    val clcnRecipient = df.select("_TagValue", "weight").filter("_TagName = '" + recipientType + "'")
+      .rdd.map(r => r(0)).collect().flatMap(x => regex.findAllIn(x.toString.toLowerCase))
+    clcnRecipient
+  }
 
+  def getRecipient(df: Dataset[Row], recipientType: String): Array[String] = {
+    val regexEmail : Regex = """(?i)\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b""".r
+    val regexLdap : Regex = "CN=\\w+>".r
+    val clcnEmail = getRecipient(df, recipientType, regexEmail)
+    val clcnLdap = getRecipient(df, recipientType, regexLdap)
+    val clcnRecipient = clcnEmail ++ clcnLdap
+    //println(clcnRecipient.deep.mkString("\n"))
+    clcnRecipient
+  }
+
+  def fileRecipientStats(fileRdd : RDD[(String, String)]): Map[String, Any] = {
+    val cntFile: Int = rddCount(fileRdd)
+    val df = getRecipientSet(fileRdd)
+    val clcnTo = getRecipient(df, "#To")
+    val clcnCc = getRecipient(df, "#CC")
+
+    val clcnTop = (clcnTo.map((_, 2)) ++ clcnCc.map((_, 1))).groupBy(_._1).toList.map(x => (x._1, x._2.map(_._2).sum))
+      .sortBy(-_._2)
+      .take(100)
+
+    val mapOutput = Map(("fileCount", cntFile), ("top100", clcnTop))
+    mapOutput
+  }
+
+  def processWordStats(folder: String): Map[String, AnyVal] = {
+    val rddFile = getZipFileRdd(folder, ".txt")
+    val mapStats = fileWordStats(rddFile)
+    mapStats
+  }
+
+  def processRecipientStats(folder: String): Map[String, Any] = {
+    val rddFile = getZipFileRdd(folder, ".xml")
+    val mapStats = fileRecipientStats(rddFile)
     mapStats
   }
 
   def process(folder: String): Unit = {
     val mapWordStats = processWordStats(folder)
     val mapRecipientStats = processRecipientStats(folder)
+    println("files = " + mapWordStats.get("fileCount").get)
+    println("words = " + mapWordStats.get("wordCount").get)
+    println("avg Words Per file = " + mapWordStats.get("avgWordPerFile").get)
+    println("files = " + mapRecipientStats.get("fileCount").get)
+    println("Top100 = " + mapRecipientStats.get("top100").get)
   }
 
 }
