@@ -173,31 +173,14 @@ spark-submit --class com.paterake.enron.SparkEmailParser --master local --driver
 
 
 # Run results
-root
- |-- _TagName: string (nullable = true)
- |-- _TagValue: string (nullable = true)
- |-- weight: integer (nullable = false)
-
-+--------+--------------------+------+
-|_TagName|           _TagValue|weight|
-+--------+--------------------+------+
-|     #To|pallen70@hotmail.com|     2|
-|     #To|          Ina Rangel|     2|
-|     #To|     Cindy Cicchetti|     2|
-|     #To|          Ina Rangel|     2|
-|     #To|pallen70@hotmail.com|     2|
-|     #To|          Ina Rangel|     2|
-|     #To| jsmith@austintx.com|     2|
-|     #To|Christopher F Calger|     2|
-|     #To|jsmith <jsmith@au...|     2|
-|     #To|          Ina Rangel|     2|
-+--------+--------------------+------+
-only showing top 10 rows
-
 files = 8927
+
 words = 4762419
+
 avg Words Per file = 533
+
 files = 1
+
 Top100 = List((pallen70@hotmail.com,605), (stagecoachmama@hotmail.com,498), (pallen@enron.com,446), (phillip.k.allen@enron.com,405), (jsmith@austintx.com,345), (cbpres@austin.rr.com,222), (mike.grigsby@enron.com,156), (jacquestc@aol.com,149), (jane.m.tholt@enron.com,131), (matt.smith@enron.com,131), (llewter@austin.rr.com,108), (gthorse@keyad.com,108), (keith.holst@enron.com,105), (jay.reitmeyer@enron.com,99), (matthew.lenhart@enron.com,99), (tori.kuykendall@enron.com,97), (randall.l.gay@enron.com,95), (maryrichards7@hotmail.com,94), (steven.p.south@enron.com,91), (frank.ermis@enron.com,89), (susan.m.scott@enron.com,73), (jason.wolfe@enron.com,69), (mark@intelligencepress.com,64), (patti.sullivan@enron.com,63), (ywang@enron.com,60), (stouchstone@natsource.com,60), (mac.d.hargrove@rssmb.com,60), (barry.tycholiz@enron.com,59), (rlehmann@yahoo.com,58), (bs_stone@yahoo.com,56), (mog.heu@enron.com,55), (jason.huang@enron.com,49), (muller@thedoghousemail.com,46), (stephanie.miller@enron.com,44), (thomas.a.martin@enron.com,40), (tim.belden@enron.com,39), (strawbale@crest.org,39), (eric.bass@enron.com,36), (dexter@intelligencepress.com,36), (mark.whitt@enron.com,36), (kim.ward@enron.com,34), (pkaufma@enron.com,34), (bob.m.hall@enron.com,34), (lkuch@mh.com,34), (mike.swerzbin@enron.com,33), (chris.h.foster@enron.com,32), (monique.sanchez@enron.com,32), (matt.motley@enron.com,32), (tom.alonso@enron.com,32), (robert.badeer@enron.com,32), (kam.keiser@enron.com,30), (alb@cpuc.ca.gov,30), (rourke@enron.com,28), (michael.cowan@enron.com,28), (paul.t.lucci@enron.com,28), (gallen@thermon.com,28), (imceanotes-all+20enron+20worldwide+40enron@enron.com,26), (chris.dorland@enron.com,26), (chad.clark@enron.com,26), (hargr@webtv.net,26), (pallen@ect.enron.com,26), (chris.mallory@enron.com,26), (gary@creativepanel.com,24), (jim123@pdq.net,24), (john.arnold@enron.com,24), (kholst@enron.com,24), (djack@keyad.com,22), (hunter.s.shively@enron.com,22), (yevgeny.frolov@enron.com,21), (scott.neal@enron.com,20), (sheri.a.righi@accenture.com,20), (scfatkfa@caprock.net,18), (imceanotes-all+20enron+20houston+40enron@enron.com,18), (donald.l.barnhart@accenture.com,17), (8774820206@pagenetmessage.net,16), (imceanotes-undisclosed-recipients+3a+3b+40enron@enron.com,16), (kolinge@enron.com,16), (wise.counsel@lpl.com,16), (imceanotes-+22jeff+20smith+22+20+3cjsmith+40austintx+2ecom+3e+40enron@enron.com,16), (debe@fsddatasvc.com,16), (moshuffle@hotmail.com,16), (christopher.f.calger@enron.com,16), (john.zufferli@enron.com,16), (retwell@sanmarcos.net,16), (david.l.johnson@enron.com,16), (jedglick@hotmail.com,16), (brendas@tgn.net,16), (brendas@surffree.com,16), (scsatkfa@caprock.net,16), (zimam@enron.com,16), (kevin.m.presto@enron.com,16), (mery.l.brown@accenture.com,15), (daniel.lisk@enron.com,15), (johnniebrown@juno.com,14), (lodonnell@spbank.com,14), (approval.eol.gas.traders@enron.com,14), (jeff.richter@enron.com,14), (chris.gaskill@enron.com,14), (western.price.survey.contacts@ren-6.cais.net,14), (paul.kaufman@enron.com,14))
 
 
