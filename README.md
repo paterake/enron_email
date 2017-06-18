@@ -89,9 +89,13 @@ ssh -i "aws_pair_key_1.pem" ec2-user@ec2-34-227-176-118.compute-1.amazonaws.com
 sudo yum update
 
 8. Mount the ESB Volume to the EC2 instance
+
 sudo file -s /dev/xvdf
+
 sudo mkdir /data
+
 sudo mount /dev/xvdf /data
+
 sudo du -sh /data/*
 
 9. Optional, make the data available via S3 - as a alternate solution
