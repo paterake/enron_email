@@ -114,9 +114,13 @@ sudo yum install java-1.8.0
 sudo yum remove java-1.7.0-openjdk
 
 java -version
+
 	openjdk version "1.8.0_131"
+
 	OpenJDK Runtime Environment (build 1.8.0_131-b11)
+
 	OpenJDK 64-Bit Server VM (build 25.131-b11, mixed mode)
+
 
 3. Install Apache Spark
 
