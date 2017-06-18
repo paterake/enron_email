@@ -13,6 +13,7 @@ Data is available as a public dataset via AWS.
 1. Since only Version 2 of the data uses XML, the processing is against the data in the folder edrm-enron-v2.
 2. Only the ZIP files for files suffixed "_xml.zip" will be considered for processing.
 3. Code is executed during development and testing under:
+
 /home/rakesh/Documents/__code/__git/enronEmail
 
 
