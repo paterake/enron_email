@@ -175,12 +175,19 @@ Assumption is to perform the processing on a micro instance with minimal cost im
 Memory for a Spark job may be an issue, and thus swap space will be required.
 
 sudo dd if=/dev/zero of=/swapfile bs=1M count=1024
+
 sudo mkswap /swapfile
+
 sudo swapon /swapfile
+
 swapon -s
+
 sudo vi /etc/fstab
+
 Add: /swapfile    none    swap sw 0 0
+
 sudo chown root:root /swapfile
+
 sudo chmod 0600 /swapfile
 
 
