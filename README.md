@@ -102,43 +102,68 @@ aws s3 cp edrm-enron-v2 s3://enron-sainsbury/v2 --recursive --exclude "*" --incl
 
 # EC2 Instance software setup
 1. Connect to EC2 instance
+
 ssh -i "pem-key" ec2-user@ec2-34-227-176-118.compute-1.amazonaws.com
 
 2. Install Java:
+
 sudo yum update
+
 sudo yum install java-1.8.0
+
 sudo yum remove java-1.7.0-openjdk
+
 java -version
 	openjdk version "1.8.0_131"
 	OpenJDK Runtime Environment (build 1.8.0_131-b11)
 	OpenJDK 64-Bit Server VM (build 25.131-b11, mixed mode)
 
 3. Install Apache Spark
+
 wget https://d3kbcqa49mib13.cloudfront.net/spark-2.1.1-bin-hadoop2.7.tgz
+
 sudo tar zxvf spark-2.1.1-bin-hadoop2.7.tgz -C /opt
+
 cd /opt
+
 sudo ln -fs spark-2.1.1-bin-hadoop2.7 /opt/spark
 
 4. Configure
+
 vi .bash_profile
+
 export SPARK_HOME=/opt/spark
+
 PATH=$PATH:$SPARK_HOME/bin
+
 :wq
+
 source ~/.bash_profile
+
 spark-submit --version
 
 5. Update logging level
+
 cp $SPARK_HOME/conf/log4j.properties.template $SPARK_HOME/conf/log4j.properties
+
 vi $SPARK_HOME/conf/log4j.properties
+
 Change
+
 log4j.rootCategory=INFO, console
+
 to
+
 log4j.rootCategory=ERROR, console
 
 6. Test spark
+
 spark-shell
+
 val textFile = spark.sparkContext.textFile("/opt/spark/README.md")
+
 textFile.count()
+
 sys.exit
 
 # EC2 Instance Swap space setup
