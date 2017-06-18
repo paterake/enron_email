@@ -32,6 +32,7 @@ Data is available as a public dataset via AWS.
 4. Recipients are defined as follows:
 
 4.1. Normal email addresses are recognised as characters surrounding an ampersand.
+
 4.2. LDAP addresses are recognised words after "CN=" ending with ">"
 
 # Non Functional Requirements.
