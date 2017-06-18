@@ -113,7 +113,6 @@ object SparkEmailParser {
       .appName("SparkEmailParser")
       .master("local")
       .getOrCreate()
-      .set("yarn.nodemanager.vmem-check-enabled","false")
     val emailParser = new SparkEmailParser(spark)
     emailParser.process(args(0))
   }
