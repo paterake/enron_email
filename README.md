@@ -205,6 +205,7 @@ rsync -azv --progress -e "ssh -i <pem-file>" enronEmail-assembly-1.0.jar  ec2-us
 
 # Application Execution
 Connect to the EC2 instance, and execute the Spark Job:
+
 spark-submit --class com.paterake.enron.SparkEmailParser --master local --driver-memory 1g --executor-memory 1g --executor-cores 1  /home/ec2-user/enronEmail-assembly-1.0.jar /data/edrm-enron-v2/*xml.zip
 
 
