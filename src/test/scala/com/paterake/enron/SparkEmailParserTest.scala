@@ -19,7 +19,7 @@ class SparkEmailParserTest extends FunSuite with BeforeAndAfterAll{
   def spark: SparkSession = _spark
 
   var emailParser: SparkEmailParser = _
-  val folder: String = "file:///home/rakesh/Documents/__code/__git/enronEmail/src/test/resources/data/edrm-enron-v2_quenet-j_xml*"
+  val folder: String = "file:///" + getClass.getResource("/data").getPath.toString + "/edrm-enron-v2_quenet-j_xml*"
 
   override def beforeAll {
     _spark = SparkSession
