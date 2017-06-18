@@ -61,6 +61,7 @@ Data is available as a public dataset via AWS.
 0. Gotcha - ensure EBS volume and subsequent EC2 is created in the same region as the dataset.
 
 1. Create an Amazon EBS volume using the Snapshot ID.
+
 aws ec2 create-volume --snapshot snap-d203feb5 --size 220 --region us-east-1 --availability-zone us-east-1b --volume-type gp2
 
 Make a note of the volume-id
@@ -72,6 +73,7 @@ Create t2.micro EC2 instance on us-east-1b
 Make a note of the instance-id
 
 4. Attache the EBS Volume to the EC2 instance
+
 aws ec2 attach-volume --volume-id vol-082bab18bf54a1d1f --instance-id i-090b4458529dcebfc --device /dev/sdf
 
 -- volume-id is captured in point1.
