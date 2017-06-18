@@ -30,6 +30,7 @@ Data is available as a public dataset via AWS.
 2. Recipients in the "To" field are weighted with a value of 2.
 3. Recipients in the "CC" field are weighted with a value of 1.
 4. Recipients are defined as follows:
+
 4.1. Normal email addresses are recognised as characters surrounding an ampersand.
 4.2. LDAP addresses are recognised words after "CN=" ending with ">"
 
