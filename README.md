@@ -99,17 +99,23 @@ sudo mount /dev/xvdf /data
 sudo du -sh /data/*
 
 9. Optional, make the data available via S3 - as a alternate solution
+
 aws configure
+
 AWS Access Key ID [None]: <Access Key ID>
+
 AWS Secret Access Key [None]: <Secret Access Key>
 
 This creates a file under ~/.aws
 
 10. Create S3 Bucket
+
 aws s3api create-bucket --bucket enron-sainsbury --region us-east-1b
 
 11. Copy edrm-enron-v2 (which contains XML data) to S3. edrm-enron-v1 can be ignored
+
 cd /data
+
 aws s3 cp edrm-enron-v2 s3://enron-sainsbury/v2 --recursive --exclude "*" --include "*xml.zip"
 
 # EC2 Instance software setup
