@@ -4,6 +4,13 @@ import org.apache.spark.sql.SparkSession
 import org.apache.spark.{SparkConf, SparkContext}
 import org.scalatest.{BeforeAndAfterAll, FunSuite}
 
+/**
+  * Testing, using sample files:
+  * 1. Test word counts, file counts and average words per file.
+  * 2. Test Top 100 recipient processing by ensuring the correct number of XML files are processed
+  * By performing these tests, this covers the root of the two processing paths
+  *
+  */
 class SparkEmailParserTest extends FunSuite with BeforeAndAfterAll{
 
   @transient
