@@ -7,6 +7,7 @@ Data is available as a public dataset via AWS.
 1. Determine the average size of emails in terms of words.
 2. Determine the Top 100 email recipients.  
 2.1. Recipients in the "To" field are weighted at 100%
+
 2.2. Recipients in the "CC" field are weighted at 50%.
 
 # Assumptions - Global
