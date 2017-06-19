@@ -17,7 +17,7 @@ Data is available as a public dataset via AWS.
 # Assumptions - Word Count
 1. Of these ZIP files, only those files with an extension of ".txt" will be considered as files representing email content.  
 2. This implies only files under the folder "text_000" will be processed - although this is not a consideration in the code developed.
-3. As stated in point 4 all files in the ZIP with an extension of ".txt" will be considered as email files.
+3. As stated in point 1 all files in the ZIP with an extension of ".txt" will be considered as email files.
 4. Words are defined as a group of characters seperated by white space in the ".txt" file.
 5. In word count processing the entirety of the file is considered, no accounting for the structure of file.
 6. No support provided for de-duplication of the email sent to multiple mailboxes (this can be considered a future enhancement).
