@@ -38,12 +38,8 @@ class SparkEmailParser(spark: SparkSession) extends java.io.Serializable {
     * @param rdd representing FileName and File Content
     * @return Count of RDD rows.
     */
-  def rddCount(rdd : RDD[(String, String)]): Int = {
-    var cntRdd: Int = 0
-    rdd.collect().foreach(x => {
-      cntRdd += 1
-      //println(x._1)
-    })
+  def rddCount(rdd : RDD[(String, String)]): Long = {
+    val cntRdd = rdd.count()
     cntRdd
   }
 
@@ -57,7 +53,7 @@ class SparkEmailParser(spark: SparkSession) extends java.io.Serializable {
     *         avgWordPerFile : Average number of words per file
     */
   def fileWordStats(fileRdd: RDD[(String, String)]): Map[String, AnyVal] = {
-    val cntFile: Int = rddCount(fileRdd)
+    val cntFile = rddCount(fileRdd)
     val cntWord = fileRdd.flatMap(x => x._2.split(" ")).count()
     val mapOutput = Map(("fileCount", cntFile), ("wordCount", cntWord), ("avgWordPerFile", cntWord/cntFile))
     mapOutput
@@ -129,7 +125,7 @@ class SparkEmailParser(spark: SparkSession) extends java.io.Serializable {
     *         top100         : Array List of the Top 100 recipients
     */
   def fileRecipientStats(fileRdd : RDD[(String, String)]): Map[String, Any] = {
-    val cntFile: Int = rddCount(fileRdd)
+    val cntFile = rddCount(fileRdd)
     val df = getRecipientSet(fileRdd)
     val clcnTo = getRecipient(df, "#To")
     val clcnCc = getRecipient(df, "#CC")
