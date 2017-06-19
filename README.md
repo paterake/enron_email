@@ -32,6 +32,8 @@ Data is available as a public dataset via AWS.
 
 4.2. LDAP addresses are recognised words after "CN=" ending with ">"
 
+5. Email address extracted can be in mixed case, normalise to lower case.
+
 # Non Functional Requirements.
 1. Minimise any form of data movement.  Moving data is costly in terms of time and resources.
 2. Mount public data set to an EC2 instance and process directly on the EC2 instance.
